@@ -1,39 +1,62 @@
+'use client ';
+import MovieCard from '@/components/custom/MovieCard';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 async function getPopularMovies() {
   const res = await fetch(
-    `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.TMDB_KEY}&language=pt-BR`,
-    { cache: 'force-cache' } // SSG
+    `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.TMDB_KEY}&language=pt-BR`
+    // { cache: 'force-cache' } // SSG
   );
 
-  if (!res.ok) throw new Error('Falha ao carregar filmes populares');
+  if (!res.ok) {
+    return null;
+  }
 
   return res.json();
 }
 
 export default async function HomePage() {
+  useEffect(() => {
+    const teste = getPopularMovies();
+    console.log(teste);
+  }, []);
+
   const data = await getPopularMovies();
+
+  if (!data) {
+    return (
+      <div className="mt-12 text-center">
+        <h2 className="mb-4 text-2xl font-semibold">
+          😢 Não foi possível carregar os filmes populares
+        </h2>
+        <p className="mb-6 text-gray-400">
+          Verifique sua conexão ou tente novamente mais tarde.
+        </p>
+        <Link
+          href="/"
+          className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+        >
+          Tentar novamente
+        </Link>
+      </div>
+    );
+  }
+
   const movies = data.results;
 
   return (
     <div>
-      <h2 className="text-3xl font-semibold mb-6">Filmes Populares</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+      <h2 className="mb-6 text-3xl font-semibold">Filmes Populares</h2>
+
+      <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
         {movies.map((movie: any) => (
-          <Link
+          <MovieCard
             key={movie.id}
-            href={`/movie/${movie.id}`}
-            className="bg-gray-800 rounded shadow hover:scale-105 transition cursor-pointer"
-          >
-            <img
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              alt={movie.title}
-              className="rounded-t"
-            />
-            <div className="p-2">
-              <h3 className="text-sm font-medium truncate">{movie.title}</h3>
-            </div>
-          </Link>
+            id={movie.id}
+            title={movie.title}
+            poster_path={movie.poster_path}
+          />
         ))}
       </div>
     </div>

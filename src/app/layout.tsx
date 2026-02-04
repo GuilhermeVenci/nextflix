@@ -1,3 +1,4 @@
+import Header from '@/components/custom/Header';
 import './globals.css';
 import type { Metadata } from 'next';
 
@@ -13,24 +14,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className="bg-gray-950 text-white min-h-screen">
-        <header className="bg-gray-900 border-b border-gray-700 px-6 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-red-500">Nextflix</h1>
-          <nav>
-            <ul className="flex gap-4 text-gray-300">
-              <li>
-                <a href="/">Home</a>
-              </li>
-              <li>
-                <a href="/favorites">Favoritos</a>
-              </li>
-              <li>
-                <a href="/login">Entrar</a>
-              </li>
-            </ul>
-          </nav>
-        </header>
-        <main className="px-6 py-8">{children}</main>
+      <body className="flex min-h-screen flex-col bg-gray-950 text-white">
+        <Header />
+        <main className="flex min-h-full flex-1 flex-col px-6 py-8">
+          {children}
+        </main>
       </body>
     </html>
   );
